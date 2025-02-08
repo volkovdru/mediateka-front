@@ -91,7 +91,7 @@ export default function Movie() {
                                 Рейтинг: {rating_kp}
                             </Typography>
                             <Grid container spacing={2} sx={{marginTop: 2}}>
-                                {episodes.length > 0 && episodes.map((episode, i) => (
+D                                {episodes.length > 0 && episodes.map((episode) => (
                                     <div>
                                         <Link to={episode.file}>
                                             <CardMedia
