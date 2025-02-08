@@ -60,7 +60,7 @@ const MovieCard = ({ id, name, posters, year, rating_kp }) => {
     };
 
     return (
-        <Grid size={{ xs: 12, md: 2 }} sx={{ position: 'relative' }}>
+        <Grid size={{ xs: 6, md: 2 }} sx={{ position: 'relative' }}>
             <A to={`/movie/${id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                 <StyledCard
                     variant="outlined"
@@ -68,13 +68,16 @@ const MovieCard = ({ id, name, posters, year, rating_kp }) => {
                     onBlur={handleBlur}
                     tabIndex={0}
                     className={focusedCardIndex === 0 ? 'Mui-focused' : ''}
-                >
+                    sx={{
+                        height: {sm: '300px'}
+                    }}
+                    >
                     <StyledCardMedia
                         component="img"
                         alt="Movie Poster"
                         image={posters[0]}
                         sx={{
-                            height: { sm: '10%', md: '250px' },
+                            height: { sm: '200px', md: '250px' },
                             borderBottom: '1px solid',
                             borderColor: 'divider',
                         }}
