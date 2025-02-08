@@ -40,8 +40,6 @@ export default function Movie() {
         files = []
     } = movie;
 
-    console.log(participants)
-
     const episodes = files.map(file => {
         const match = file.name.match(/S(\d{2})E(\d{2})/);
         if (match) {
@@ -91,7 +89,7 @@ export default function Movie() {
                                 Рейтинг: {rating_kp}
                             </Typography>
                             <Grid container spacing={2} sx={{marginTop: 2}}>
-D                                {episodes.length > 0 && episodes.map((episode) => (
+                                {episodes.length > 0 && episodes.map((episode) => (
                                     <div>
                                         <Link to={episode.file}>
                                             <CardMedia
@@ -112,7 +110,8 @@ D                                {episodes.length > 0 && episodes.map((episode) 
 
                                 {episodes.length === 0 && files.map((file) => (
                                     <Grid item xs={12} key={file.id}>
-                                        <Button variant="outlined" href={file.online} target="_blank" sx={{ marginRight: 1 }}>
+                                        <Button variant="outlined" href={file.online} target="_blank"
+                                                sx={{marginRight: 1}}>
                                             Смотреть
                                         </Button>
                                     </Grid>
@@ -129,81 +128,81 @@ D                                {episodes.length > 0 && episodes.map((episode) 
                     </Grid>
                 )}
                 <Grid container spacing={2} size={12}>
-                        {Object.values(participants).map((participant) => (
-                            <Grid size={{xs: 12, md: 2}}>
-                                <Card
+                    {Object.values(participants).map((participant) => (
+                        <Grid size={{xs: 12, md: 2}}>
+                            <Card
+                                sx={{
+                                    width: '100%',
+                                    height: '100%',
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    padding: 0,
+                                    borderRadius: 2,
+                                    boxShadow: 3,
+                                    transition: 'transform 0.2s, box-shadow 0.2s',
+                                    '&:hover': {
+                                        transform: 'scale(1.02)',
+                                        boxShadow: 6,
+                                    },
+                                }}
+                            >
+                                <CardMedia
                                     sx={{
+                                        height: '200px',
                                         width: '100%',
-                                        height: '100%',
+                                        objectFit: 'cover',
+                                        borderTopLeftRadius: 8,
+                                        borderTopRightRadius: 8,
+                                    }}
+                                    image={participant.photo}
+                                    title={participant.name}
+                                />
+                                <CardContent
+                                    sx={{
+                                        flex: 1,
                                         display: 'flex',
                                         flexDirection: 'column',
-                                        padding: 0,
-                                        borderRadius: 2,
-                                        boxShadow: 3,
-                                        transition: 'transform 0.2s, box-shadow 0.2s',
-                                        '&:hover': {
-                                            transform: 'scale(1.02)',
-                                            boxShadow: 6,
-                                        },
+                                        padding: '10px',
                                     }}
                                 >
-                                    <CardMedia
+                                    <Typography
+                                        gutterBottom
+                                        variant="h5"
+                                        component="div"
                                         sx={{
-                                            height: '200px',
-                                            width: '100%',
-                                            objectFit: 'cover',
-                                            borderTopLeftRadius: 8,
-                                            borderTopRightRadius: 8,
-                                        }}
-                                        image={participant.photo}
-                                        title={participant.name}
-                                    />
-                                    <CardContent
-                                        sx={{
-                                            flex: 1,
-                                            display: 'flex',
-                                            flexDirection: 'column',
-                                            padding: '10px',
+                                            fontWeight: 'bold',
+                                            marginBottom: 1,
                                         }}
                                     >
-                                        <Typography
-                                            gutterBottom
-                                            variant="h5"
-                                            component="div"
-                                            sx={{
-                                                fontWeight: 'bold',
-                                                marginBottom: 1,
-                                            }}
-                                        >
-                                            {participant.name}
-                                        </Typography>
+                                        {participant.name}
+                                    </Typography>
+                                    <Typography
+                                        variant="body2"
+                                        sx={{
+                                            color: 'text.secondary',
+                                            fontStyle: 'italic',
+                                            marginBottom: 1,
+                                        }}
+                                    >
+                                        {participant.role}
+                                    </Typography>
+                                    {participant.info && (
                                         <Typography
                                             variant="body2"
                                             sx={{
                                                 color: 'text.secondary',
-                                                fontStyle: 'italic',
-                                                marginBottom: 1,
+                                                fontSize: '0.875rem',
+                                                flex: 1,
+                                                paddingBottom: '10px',
                                             }}
                                         >
-                                            {participant.role}
+                                            {participant.info}
                                         </Typography>
-                                        {participant.info && (
-                                            <Typography
-                                                variant="body2"
-                                                sx={{
-                                                    color: 'text.secondary',
-                                                    fontSize: '0.875rem',
-                                                    flex: 1,
-                                                    paddingBottom: '10px',
-                                                }}
-                                            >
-                                                {participant.info}
-                                            </Typography>
-                                        )}
-                                    </CardContent>
-                                </Card>
-                            </Grid>
-                        ))}
+                                    )}
+                                </CardContent>
+                            </Card>
+                        </Grid>
+                    ))}
                 </Grid>
             </Grid>
 
