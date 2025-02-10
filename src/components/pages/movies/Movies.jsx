@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {useEffect} from 'react';
+import { useEffect } from 'react';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid2';
 import FormControl from '@mui/material/FormControl';
@@ -7,9 +7,9 @@ import InputAdornment from '@mui/material/InputAdornment';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import MovieCard from "./MovieCard";
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Pagination from "@mui/material/Pagination";
-import {PaginationItem} from "@mui/material";
+import { PaginationItem } from "@mui/material";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import Button from '@mui/material/Button';
@@ -24,56 +24,61 @@ import {
     selectLoading,
     selectMovies,
     setCurrentPage,
-    setFilters,
+    setYearsFilter,
 } from '../../../store/slices/moviesSlice';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 
 function getValue(year) {
-    if (year[1] !== null && year[1] !== undefined) {
+    if (Array.isArray(year)) {
         return `${Math.min(...year)} - ${Math.max(...year)}`;
     }
-    return [year]
+    return year.toString(); // Всегда возвращаем строку
 }
 
-
-function YearSelect({value, onChange}) {
+function YearSelect({ value, onChange }) {
     let years = [];
 
+    years.push({
+        name: "Выберите год",
+        value: []
+    });
+
+    // Генерация списка годов
     for (let year = 2025; year >= 1910; year--) {
         if (year % 10 === 0 && year !== 2029) {
             let ar = [];
             for (let i = 1; i <= 10; i++) {
                 ar.push(year - i);
             }
-            years.push(ar);
+            years.push({
+                name: getValue(ar),
+                value: ar
+            });
         } else if (year >= 2020) {
-            years.push(year);
+            years.push({
+                name: year.toString(),
+                value: [year]
+            });
         }
     }
 
-    console.log(years);
-
-
     return (
-        <FormControl sx={{minWidth: 120}}>
+        <FormControl sx={{ minWidth: 120 }}>
             <Select
-                value={value}
-                onChange={(e) => onChange(e.target.value)}
+                value={value?.name || "Выберите год"}
+                onChange={(e) => {
+                    const selectedYear = years.find((year) => year.name === e.target.value);
+                    onChange(selectedYear || []);
+                }}
                 displayEmpty
-                variant="outlined" // Добавьте variant
-                inputProps={{'aria-label': 'Without label'}}
                 renderValue={(selected) => selected}
+                variant="outlined"
             >
-                <MenuItem selected value="Выберите год" key="0">
-                    <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
-                        Выберите год
-                    </Box>
-                </MenuItem>
                 {years.map((year, index) => (
-                    <MenuItem key={index} value={year}>
-                        <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
-                            {getValue(year)}
+                    <MenuItem key={index} value={year.name}> {/* Используем name как значение */}
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                            {year.name}
                         </Box>
                     </MenuItem>
                 ))}
@@ -84,20 +89,20 @@ function YearSelect({value, onChange}) {
 
 export function Search() {
     return (
-        <FormControl sx={{width: {xs: '100%', md: '25ch'}}} variant="outlined">
+        <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
             <OutlinedInput
                 size="small"
                 id="search"
                 placeholder="Поиск…"
-                sx={{flexGrow: 1}}
+                sx={{ flexGrow: 1 }}
                 startAdornment={
-                    <InputAdornment position="start" sx={{color: 'text.primary'}}>
-                        <SearchRoundedIcon fontSize="small"/>
+                    <InputAdornment position="start" sx={{ color: 'text.primary' }}>
+                        <SearchRoundedIcon fontSize="small" />
                     </InputAdornment>
                 }
                 inputProps={{
                     'aria-label': 'search',
-                }}/>
+                }} />
         </FormControl>
     );
 }
@@ -122,11 +127,9 @@ export default function Movies() {
         dispatch(setCurrentPage(value));
     };
 
-    const handleFilterChange = (filterType, value) => {
-        if (!Array.isArray(value)) {
-            value = [value];
-        }
-        dispatch(setFilters({[filterType]: value}));
+    const handleYearsFilterChange = (value) => {
+        console.log("value", value);
+        dispatch(setYearsFilter(value)); // value - это массив
     };
 
     const handleResetFilters = () => {
@@ -142,17 +145,16 @@ export default function Movies() {
     }
 
     return (
-        <Box sx={{display: 'flex', flexDirection: 'column', gap: 4}}>
-            <Box sx={{display: 'flex', gap: 2, flexWrap: 'wrap'}}>
-                {/* Кастомный выпадающий список для годов */}
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+            <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
                 <YearSelect
-                    value={getValue(filters.years)}
-                    onChange={(value) => handleFilterChange('years', value)}
+                    value={filters.years || { name: "Выберите год", value: [] }} // Передаем объект по умолчанию
+                    onChange={(value) => handleYearsFilterChange(value)}
                 />
                 <Button variant="outlined" onClick={handleResetFilters}>
                     Сбросить фильтр
                 </Button>
-                <Search/>
+                <Search />
             </Box>
             <Grid container spacing={2} columns={12}>
                 {movies.map((movie) => (
@@ -166,7 +168,7 @@ export default function Movies() {
                     onChange={handlePageChange}
                     renderItem={(item) => (
                         <PaginationItem
-                            slots={{previous: ArrowBackIcon, next: ArrowForwardIcon}}
+                            slots={{ previous: ArrowBackIcon, next: ArrowForwardIcon }}
                             {...item}
                         />
                     )}

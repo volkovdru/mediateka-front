@@ -38,13 +38,13 @@ const SingleLineText = styled(Typography)({
 });
 
 const StyledCardMedia = styled(CardMedia)({
-    transition: 'transform 0.3s ease', // Плавный переход для изображения
+    transition: 'transform 0.3s ease',
     '&:hover': {
-        transform: 'scale(1.05)', // Увеличение изображения на 5% при наведении
+        transform: 'scale(1.05)',
     },
-    objectFit: 'cover', // Сохранение пропорций изображения
-    width: '100%', // Ширина 100% для заполнения контейнера
-    height: '100%', // Высота 100% для заполнения контейнера
+    objectFit: 'cover',
+    width: '100%',
+    height: '100%',
 });
 
 const MovieCard = ({ id, name, posters, year, rating_kp }) => {
@@ -60,7 +60,7 @@ const MovieCard = ({ id, name, posters, year, rating_kp }) => {
     };
 
     return (
-        <Grid size={{ xs: 6, md: 2 }} sx={{ position: 'relative' }}>
+        <Grid size={{ xs: 6, sm: 3, md: 2}} sx={{ position: 'relative' }}>
             <A to={`/movie/${id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                 <StyledCard
                     variant="outlined"
@@ -69,7 +69,7 @@ const MovieCard = ({ id, name, posters, year, rating_kp }) => {
                     tabIndex={0}
                     className={focusedCardIndex === 0 ? 'Mui-focused' : ''}
                     sx={{
-                        height: {sm: '300px'}
+                        height: {sm: '300px', md: '330px'}
                     }}
                     >
                     <StyledCardMedia

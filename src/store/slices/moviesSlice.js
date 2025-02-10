@@ -12,7 +12,7 @@ export const fetchMovies = createAsyncThunk('movies/fetchMovies', async (_, { ge
             order,
             genre: filters.genre,
             country: filters.country,
-            years: filters.years,
+            years: filters.years.value,
         },
     });
     return response.data.data;
@@ -44,8 +44,8 @@ const moviesSlice = createSlice({
         setCurrentPage: (state, action) => {
             state.currentPage = action.payload;
         },
-        setFilters: (state, action) => {
-            state.filters = { ...state.filters, ...action.payload };
+        setYearsFilter: (state, action) => {
+            state.filters = { ...state.filters, "years": action.payload };
         },
         resetFilters: (state) => {
             state.filters = {
@@ -93,7 +93,7 @@ const moviesSlice = createSlice({
 
 export const {
     setCurrentPage,
-    setFilters,
+    setYearsFilter,
     resetFilters,
     setOrder,
     setOrderDirection,
