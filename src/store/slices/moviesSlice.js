@@ -10,7 +10,7 @@ export const fetchMovies = createAsyncThunk('movies/fetchMovies', async (_, { ge
             offset: 24 * (currentPage - 1),
             order_direction,
             order,
-            genre: filters.genre,
+            genres: filters.genres.map(genre => genre.id),
             country: filters.country,
             years: filters.years.value,
         },
@@ -33,7 +33,7 @@ const moviesSlice = createSlice({
         count: 0,
         currentPage: 1,
         filters: {
-            genre: '',
+            genres: [],
             country: '',
             years: [],
         },
@@ -47,9 +47,12 @@ const moviesSlice = createSlice({
         setYearsFilter: (state, action) => {
             state.filters = { ...state.filters, "years": action.payload };
         },
+        setGenreFilter: (state, action) => {
+            state.filters = { ...state.filters, "genres": action.payload };
+        },
         resetFilters: (state) => {
             state.filters = {
-                genre: '',
+                genres: [],
                 country: '',
                 years: [],
             };
@@ -82,7 +85,7 @@ const moviesSlice = createSlice({
             })
             .addCase(fetchGenres.fulfilled, (state, action) => {
                 state.loading = false;
-                state.genres = action.payload;
+                state.genres = action.payload.filter(s=> s.name !== "!перезалить!");
             })
             .addCase(fetchGenres.rejected, (state, action) => {
                 state.loading = false;
@@ -94,6 +97,7 @@ const moviesSlice = createSlice({
 export const {
     setCurrentPage,
     setYearsFilter,
+    setGenreFilter,
     resetFilters,
     setOrder,
     setOrderDirection,
