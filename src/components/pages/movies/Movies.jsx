@@ -9,6 +9,7 @@ import {PaginationItem} from "@mui/material";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import {
+    fetchCountries,
     fetchGenres,
     fetchMovies,
     selectCount,
@@ -35,6 +36,7 @@ export default function Movies() {
     useEffect(() => {
         dispatch(fetchMovies());
         dispatch(fetchGenres());
+        dispatch(fetchCountries());
     }, [dispatch, currentPage, filters]);
 
     const handlePageChange = (event, value) => {

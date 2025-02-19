@@ -11,7 +11,7 @@ export const fetchMovies = createAsyncThunk('movies/fetchMovies', async (_, { ge
             order_direction,
             order,
             genres: filters.genres.map(genre => genre.id),
-            country: filters.country,
+            countries: filters.countries.map(country => country.id),
             years: filters.years.value,
         },
     });
@@ -23,18 +23,26 @@ export const fetchGenres = createAsyncThunk('movies/fetchGenres', async () => {
     return response.data.data;
 });
 
+export const fetchCountries = createAsyncThunk('movies/fetchСountries', async () => {
+    const response = await axios.get(`https://api.baza.net/portal/countries`);
+    return response.data.data;
+});
+
+
+
 const moviesSlice = createSlice({
     name: 'movies',
     initialState: {
         movies: [],
         genres: [],
+        countries: [],
         loading: false,
         error: null,
         count: 0,
         currentPage: 1,
         filters: {
             genres: [],
-            country: '',
+            countries: [],
             years: [],
         },
         order: 'updated',
@@ -50,10 +58,13 @@ const moviesSlice = createSlice({
         setGenreFilter: (state, action) => {
             state.filters = { ...state.filters, "genres": action.payload };
         },
+        setCountriesFilter: (state, action) => {
+            state.filters = { ...state.filters, "countries": action.payload };
+        },
         resetFilters: (state) => {
             state.filters = {
                 genres: [],
-                country: '',
+                countries: [],
                 years: [],
             };
         },
@@ -85,12 +96,25 @@ const moviesSlice = createSlice({
             })
             .addCase(fetchGenres.fulfilled, (state, action) => {
                 state.loading = false;
-                state.genres = action.payload.filter(s=> s.name !== "!перезалить!");
+                state.genres = action.payload.filter(s=> s.name !== "!перезалить!"); //TODO: вынести фильтр отсюда
             })
             .addCase(fetchGenres.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.error.message;
-            });
+            })
+            .addCase(fetchCountries.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(fetchCountries.fulfilled, (state, action) => {
+                state.loading = false;
+                state.countries = action.payload;
+            })
+            .addCase(fetchCountries.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.error.message;
+            })
+        ;
     },
 });
 
@@ -98,6 +122,7 @@ export const {
     setCurrentPage,
     setYearsFilter,
     setGenreFilter,
+    setCountriesFilter,
     resetFilters,
     setOrder,
     setOrderDirection,
@@ -111,4 +136,5 @@ export const selectLoading = (state) => state.movies.loading;
 export const selectError = (state) => state.movies.error;
 export const selectFilters = (state) => state.movies.filters;
 export const selectGenres = (state) => state.movies.genres;
+export const selectCountries = (state) => state.movies.countries;
 export const selectCurrentPage = (state) => state.movies.currentPage;

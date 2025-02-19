@@ -11,7 +11,15 @@ import OutlinedInput from "@mui/material/OutlinedInput";
 import InputAdornment from "@mui/material/InputAdornment";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import {useDispatch, useSelector} from "react-redux";
-import {resetFilters, selectFilters, selectGenres, setGenreFilter, setYearsFilter} from "./store/slices/moviesSlice";
+import {
+    resetFilters,
+    selectCountries,
+    selectFilters,
+    selectGenres,
+    setCountriesFilter,
+    setGenreFilter,
+    setYearsFilter
+} from "./store/slices/moviesSlice";
 import {Checkbox, ListItemText} from "@mui/material";
 
 function getValue(year) {
@@ -21,7 +29,7 @@ function getValue(year) {
     return year.toString(); // Всегда возвращаем строку
 }
 
-function YearSelect({ value, onChange }) {
+function YearSelect({value, onChange}) {
     let years = [];
 
     years.push({
@@ -49,7 +57,7 @@ function YearSelect({ value, onChange }) {
     }
 
     return (
-        <FormControl sx={{ minWidth: 120 }}>
+        <FormControl sx={{minWidth: 120}}>
             <Select
                 value={value?.name || "Выберите год"}
                 onChange={(e) => {
@@ -62,7 +70,7 @@ function YearSelect({ value, onChange }) {
             >
                 {years.map((year, index) => (
                     <MenuItem key={index} value={year.name}> {/* Используем name как значение */}
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
                             {year.name}
                         </Box>
                     </MenuItem>
@@ -74,20 +82,20 @@ function YearSelect({ value, onChange }) {
 
 function Search() {
     return (
-        <FormControl sx={{ width: { xs: '100%', md: '25ch' } }} variant="outlined">
+        <FormControl sx={{width: {xs: '100%', md: '25ch'}}} variant="outlined">
             <OutlinedInput
                 size="small"
                 id="search"
                 placeholder="Поиск…"
-                sx={{ flexGrow: 1 }}
+                sx={{flexGrow: 1}}
                 startAdornment={
-                    <InputAdornment position="start" sx={{ color: 'text.primary' }}>
-                        <SearchRoundedIcon fontSize="small" />
+                    <InputAdornment position="start" sx={{color: 'text.primary'}}>
+                        <SearchRoundedIcon fontSize="small"/>
                     </InputAdornment>
                 }
                 inputProps={{
                     'aria-label': 'search',
-                }} />
+                }}/>
         </FormControl>
     );
 }
@@ -104,7 +112,7 @@ function GenreSelect() {
     };
 
     return (
-        <FormControl sx={{ width: 300 }}>
+        <FormControl sx={{width: 300}}>
 
             <Select
                 labelId="genre-select-label"
@@ -135,8 +143,60 @@ function GenreSelect() {
             >
                 {genres.map((genre) => (
                     <MenuItem key={genre.id} value={genre.id}>
-                        <Checkbox checked={selectedGenres.some((g) => g.id === genre.id)} />
-                        <ListItemText primary={genre.name} />
+                        <Checkbox checked={selectedGenres.some((g) => g.id === genre.id)}/>
+                        <ListItemText primary={genre.name}/>
+                    </MenuItem>
+                ))}
+            </Select>
+        </FormControl>
+    );
+}
+
+function CountrySelect() {
+    const dispatch = useDispatch();
+    const countries = useSelector(selectCountries);
+    const selectedCountries = useSelector((state) => state.movies.filters.countries);
+
+    const handleCountriesChange = (event) => {
+        const selectedCountryIds = event.target.value;
+        const selectedCountries = countries.filter((country) => selectedCountryIds.includes(country.id));
+        dispatch(setCountriesFilter(selectedCountries));
+    };
+
+    return (
+        <FormControl sx={{width: 300}}>
+
+            <Select
+                labelId="country-select-label"
+                variant="outlined"
+                multiple
+                value={selectedCountries.map((g) => g.id)}
+                onChange={handleCountriesChange}
+                displayEmpty
+                renderValue={(selected) => {
+                    console.log(selected);
+                    if (selected.length === 0) {
+                        return "Выберите страны"
+                    }
+                    return selected.map((id) => countries.find((c) => c.id === id)?.name).join(', ');
+                }}
+                MenuProps={{
+                    disableAutoFocusItem: true,
+                    PaperProps: {
+                        style: {
+                            maxHeight: 300,
+                        },
+                    },
+                }}
+                inputProps={{
+                    'aria-label': 'Страны',
+                }}
+                label="Страны"
+            >
+                {countries.map((country) => (
+                    <MenuItem key={country.id} value={country.id}>
+                        <Checkbox checked={selectedCountries.some((g) => g.id === country.id)}/>
+                        <ListItemText primary={country.name}/>
                     </MenuItem>
                 ))}
             </Select>
@@ -160,23 +220,24 @@ const HomePage = () => {
     return (
         <Container
             component="main"
-            sx={{ display: 'flex', flexDirection: 'column', my: 0, gap: 4 }}
+            sx={{display: 'flex', flexDirection: 'column', my: 0, gap: 4}}
         >
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-                <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+            <Box sx={{display: 'flex', flexDirection: 'column', gap: 4}}>
+                <Box sx={{display: 'flex', gap: 2, flexWrap: 'wrap'}}>
                     <YearSelect
-                        value={filters.years || { name: "Выберите год", value: [] }} // Передаем объект по умолчанию
+                        value={filters.years || {name: "Выберите год", value: []}} // Передаем объект по умолчанию
                         onChange={(value) => handleYearsFilterChange(value)}
                     />
-                    <GenreSelect />
+                    <GenreSelect/>
+                    <CountrySelect/>
                     <Button variant="outlined" onClick={handleResetFilters}>
                         Сбросить фильтр
                     </Button>
-                    <Search />
+                    <Search/>
                 </Box>
             </Box>
-            <Movies />
-            <Latest />
+            <Movies/>
+            <Latest/>
         </Container>
     );
 };
