@@ -9,7 +9,7 @@ export const fetchMovies = createAsyncThunk('movies/fetchMovies', async (_, { ge
             limit: 24,
             offset: 24 * (currentPage - 1),
             order_direction,
-            order,
+            order: order.value,
             genres: filters.genres.map(genre => genre.id),
             countries: filters.countries.map(country => country.id),
             years: filters.years.value,
@@ -28,26 +28,33 @@ export const fetchCountries = createAsyncThunk('movies/fetchСountries', async (
     return response.data.data;
 });
 
+const initialState = {
+    movies: [],
+    genres: [],
+    countries: [],
+    loading: false,
+    error: null,
+    count: 0,
+    currentPage: 1,
+    filters: {
+        genres: [],
+        countries: [],
+        years: []
+    },
+    orders: [
+        {value: 'updated', name: 'По дате добавления'},
+        {value: 'downloads', name: 'По популярности'},
+        {value: 'rating_kp', name: 'По рейтингу'},
+        {value: 'year', name: 'По году'},
+    ],
+    order: '',
+    order_direction: 'desc',
+}
 
 
 const moviesSlice = createSlice({
     name: 'movies',
-    initialState: {
-        movies: [],
-        genres: [],
-        countries: [],
-        loading: false,
-        error: null,
-        count: 0,
-        currentPage: 1,
-        filters: {
-            genres: [],
-            countries: [],
-            years: [],
-        },
-        order: 'updated',
-        order_direction: 'desc',
-    },
+    initialState,
     reducers: {
         setCurrentPage: (state, action) => {
             state.currentPage = action.payload;
@@ -62,11 +69,8 @@ const moviesSlice = createSlice({
             state.filters = { ...state.filters, "countries": action.payload };
         },
         resetFilters: (state) => {
-            state.filters = {
-                genres: [],
-                countries: [],
-                years: [],
-            };
+            state.filters = initialState.filters;
+            state.order = initialState.order;
         },
         setOrder: (state, action) => {
             state.order = action.payload;
@@ -135,6 +139,10 @@ export const selectCount = (state) => state.movies.count;
 export const selectLoading = (state) => state.movies.loading;
 export const selectError = (state) => state.movies.error;
 export const selectFilters = (state) => state.movies.filters;
+export const selectOrder = (state) => state.movies.order;
+export const selectOrderDirection = (state) => state.movies.order_direction;
 export const selectGenres = (state) => state.movies.genres;
 export const selectCountries = (state) => state.movies.countries;
+export const selectOrders = (state) => state.movies.orders;
+export const selectFilteredCountries = (state) => state.movies.filters.countries;
 export const selectCurrentPage = (state) => state.movies.currentPage;

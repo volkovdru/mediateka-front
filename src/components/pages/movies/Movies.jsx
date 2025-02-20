@@ -17,7 +17,7 @@ import {
     selectError,
     selectFilters,
     selectLoading,
-    selectMovies,
+    selectMovies, selectOrder,
     setCurrentPage,
 } from '../../../store/slices/moviesSlice';
 
@@ -29,6 +29,7 @@ export default function Movies() {
     const loading = useSelector(selectLoading);
     const error = useSelector(selectError);
     const filters = useSelector(selectFilters);
+    const order = useSelector(selectOrder);
     const currentPage = useSelector(selectCurrentPage);
 
     const pageCount = Math.floor(count / 24) + 1;
@@ -37,7 +38,7 @@ export default function Movies() {
         dispatch(fetchMovies());
         dispatch(fetchGenres());
         dispatch(fetchCountries());
-    }, [dispatch, currentPage, filters]);
+    }, [dispatch, currentPage, filters, order]);
 
     const handlePageChange = (event, value) => {
         dispatch(setCurrentPage(value));
