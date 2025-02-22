@@ -19,7 +19,6 @@ const App = (props) => {
                 component="main"
                 sx={{display: 'flex', flexDirection: 'column', my: 16, gap: 4}}
             >
-
                 <Routes>
                     <Route path="/" element={<MoviesPage/>}/>
                     <Route path="/movies" element={<MoviesPage/>}/>

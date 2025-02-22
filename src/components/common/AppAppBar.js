@@ -15,6 +15,7 @@ import ColorModeIconDropdown from '../../shared-theme/ColorModeIconDropdown';
 import {Link} from 'react-router-dom';
 import menuItems from "./menuItems";
 import Logo from "./Logo";
+import Search from "../pages/movies/orderAndFilters/Search";
 
 const StyledToolbar = styled(Toolbar)(({theme}) => ({
     display: 'flex',
@@ -60,6 +61,7 @@ export default function AppAppBar() {
                                 </Link>
                             ))}
                         </Box>
+                        <Search/>
                     </Box>
                     <Box
                         sx={{

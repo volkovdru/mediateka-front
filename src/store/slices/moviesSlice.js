@@ -28,6 +28,16 @@ export const fetchCountries = createAsyncThunk('movies/fetchСountries', async (
     return response.data.data;
 });
 
+export const fetchSearchResults = createAsyncThunk(
+    'movies/fetchSearchResults',
+    async (query) => {
+        const response = await axios.post('https://api.baza.net/portal/search', {
+            query: query,
+        });
+        return response.data.data.movies;
+    }
+);
+
 const initialState = {
     movies: [],
     genres: [],
@@ -49,6 +59,7 @@ const initialState = {
     ],
     order: '',
     order_direction: 'desc',
+    searchResults: [],
 }
 
 
@@ -118,6 +129,18 @@ const moviesSlice = createSlice({
                 state.loading = false;
                 state.error = action.error.message;
             })
+            .addCase(fetchSearchResults.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(fetchSearchResults.fulfilled, (state, action) => {
+                state.loading = false;
+                state.searchResults = action.payload;
+            })
+            .addCase(fetchSearchResults.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.error.message;
+            })
         ;
     },
 });
@@ -146,3 +169,4 @@ export const selectCountries = (state) => state.movies.countries;
 export const selectOrders = (state) => state.movies.orders;
 export const selectFilteredCountries = (state) => state.movies.filters.countries;
 export const selectCurrentPage = (state) => state.movies.currentPage;
+export const selectSearchResults = (state) => state.movies.searchResults;
