@@ -100,18 +100,19 @@ const Search = () => {
                     ) : searchResults?.length > 0 ? (
                         <List dense>
                             {searchResults.map((result) => (
+                                <Link to={`/movie/${result.movie_id}`} style={{
+                                    textDecoration: 'none',
+                                    color: 'inherit'
+                                }}>
+                                    <ListItem
+                                        key={result.id}
+                                        onClick={handleClose}
+                                    >
 
-                                <ListItem
-                                    key={result.id}
-                                    onClick={handleClose}
-                                >
-                                    <Link to={`/movie/${result.movie_id}`} style={{
-                                        textDecoration: 'none',
-                                        color: 'inherit'
-                                    }}>
                                         <ListItemText primary={result.name}/>
-                                    </Link>
-                                </ListItem>
+
+                                    </ListItem>
+                                </Link>
                             ))}
                         </List>
                     ) : (

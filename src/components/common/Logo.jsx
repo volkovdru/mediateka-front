@@ -13,7 +13,6 @@ const LogoContainer = styled(Box)(({ theme }) => ({
 }));
 
 const LogoText = styled('div')(({ theme }) => ({
-
     marginLeft: '8px',
     color: theme.palette.text.primary, // Цвет текста из темы
 }));

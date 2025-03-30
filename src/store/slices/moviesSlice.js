@@ -62,6 +62,9 @@ const initialState = {
     searchResults: [],
 }
 
+const resetCurrentPage = (state) => {
+    state.currentPage = initialState.currentPage;
+}
 
 const moviesSlice = createSlice({
     name: 'movies',
@@ -72,22 +75,28 @@ const moviesSlice = createSlice({
         },
         setYearsFilter: (state, action) => {
             state.filters = { ...state.filters, "years": action.payload };
+            resetCurrentPage(state);
         },
         setGenreFilter: (state, action) => {
             state.filters = { ...state.filters, "genres": action.payload };
+            resetCurrentPage(state);
         },
         setCountriesFilter: (state, action) => {
             state.filters = { ...state.filters, "countries": action.payload };
+            resetCurrentPage(state);
         },
         resetFilters: (state) => {
             state.filters = initialState.filters;
             state.order = initialState.order;
+            resetCurrentPage(state);
         },
         setOrder: (state, action) => {
             state.order = action.payload;
+            resetCurrentPage(state);
         },
         setOrderDirection: (state, action) => {
             state.order_direction = action.payload;
+            resetCurrentPage(state);
         },
     },
     extraReducers: (builder) => {
